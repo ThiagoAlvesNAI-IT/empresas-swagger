@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal de APIs - Empresas</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.15.5/swagger-ui.css" />
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -65,6 +65,11 @@
         #swagger-ui {
             margin-top: 20px;
         }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
         .error-message {
             background: #fee;
             border: 1px solid #fcc;
@@ -87,7 +92,7 @@
             <div class="api-description">
                 API de demonstração com endpoints básicos para teste e validação.
             </div>
-            <button class="api-button" onclick="loadAPI('api-exemplo.yaml', 'API Exemplo')">
+            <button class="api-button" onclick="loadAPI('api-exemplo.yaml')">
                 Ver Documentação
             </button>
         </div>
@@ -97,105 +102,78 @@
             <div class="api-description">
                 Conjunto de APIs para gestão empresarial, incluindo vendas, estoque e financeiro.
             </div>
-            <button class="api-button" onclick="loadMultipleAPIs()">
-                Ver Todas as APIs
+            <button class="api-button" onclick="loadAPI('api-exemplo.yaml')">
+                Ver API Exemplo
             </button>
         </div>
     </div>
 
     <div id="swagger-ui"></div>
 
-    <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
+    <!-- Usando CDN mais estável e versão testada -->
+    <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4.15.5/swagger-ui-bundle.js"></script>
     <script>
-        let ui;
+        let swaggerUI;
+
+        function showLoading() {
+            document.getElementById('swagger-ui').innerHTML = '<div class="loading">Carregando documentação da API...</div>';
+        }
 
         function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error-message';
-            errorDiv.innerHTML = `<strong>Erro:</strong> ${message}`;
+            document.getElementById('swagger-ui').innerHTML = 
+                `<div class="error-message"><strong>Erro:</strong> ${message}</div>`;
+        }
+
+        function loadAPI(specUrl) {
+            showLoading();
             
-            const swaggerContainer = document.getElementById('swagger-ui');
-            swaggerContainer.innerHTML = '';
-            swaggerContainer.appendChild(errorDiv);
-        }
-
-        function loadAPI(url, name) {
             try {
-                // Limpar container anterior
-                if (ui) {
-                    ui = null;
-                    document.getElementById('swagger-ui').innerHTML = '';
-                }
-                
-                // Verificar se o arquivo existe
-                fetch(url)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Arquivo ${url} não encontrado (${response.status})`);
-                        }
-                        return response.text();
-                    })
-                    .then(() => {
-                        // Carregar Swagger UI SEM layout específico
-                        ui = SwaggerUIBundle({
-                            url: url,
-                            dom_id: '#swagger-ui',
-                            deepLinking: true,
-                            presets: [
-                                SwaggerUIBundle.presets.apis,
-                                SwaggerUIBundle.presets.standalone
-                            ],
-                            // REMOVIDO: layout: "StandaloneLayout",
-                            docExpansion: "list",
-                            filter: true,
-                            tryItOutEnabled: true
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Erro ao carregar API:', error);
-                        showError(error.message);
-                    });
-            } catch (error) {
-                console.error('Erro geral:', error);
-                showError('Erro ao inicializar Swagger UI: ' + error.message);
-            }
-        }
-
-        function loadMultipleAPIs() {
-            try {
-                if (ui) {
-                    ui = null;
-                    document.getElementById('swagger-ui').innerHTML = '';
-                }
-                
-                ui = SwaggerUIBundle({
-                    urls: [
-                        {
-                            url: "api-exemplo.yaml",
-                            name: "API Exemplo"
-                        }
-                    ],
-                    "urls.primaryName": "API Exemplo",
+                // Configuração simplificada e testada
+                swaggerUI = SwaggerUIBundle({
+                    url: specUrl,
                     dom_id: '#swagger-ui',
                     deepLinking: true,
                     presets: [
                         SwaggerUIBundle.presets.apis,
                         SwaggerUIBundle.presets.standalone
                     ],
-                    // REMOVIDO: layout: "StandaloneLayout",
+                    plugins: [
+                        SwaggerUIBundle.plugins.DownloadUrl
+                    ],
                     docExpansion: "list",
                     filter: true,
-                    tryItOutEnabled: true
+                    showExtensions: true,
+                    showCommonExtensions: true,
+                    onComplete: function() {
+                        console.log('Swagger UI carregado com sucesso!');
+                    },
+                    onFailure: function(error) {
+                        console.error('Erro ao carregar Swagger UI:', error);
+                        showError('Falha ao carregar a documentação da API.');
+                    }
                 });
             } catch (error) {
-                console.error('Erro ao carregar múltiplas APIs:', error);
-                showError('Erro ao carregar múltiplas APIs: ' + error.message);
+                console.error('Erro ao inicializar Swagger UI:', error);
+                showError('Erro ao inicializar a interface da documentação.');
             }
         }
 
-        // Carregar API padrão ao inicializar a página
+        // Carregar automaticamente quando a página estiver pronta
         window.addEventListener('load', function() {
-            console.log('Página carregada, Swagger UI disponível:', typeof SwaggerUIBundle !== 'undefined');
+            console.log('Página carregada. Swagger UI Bundle disponível:', typeof SwaggerUIBundle !== 'undefined');
+            
+            // Verificar se o arquivo YAML existe
+            fetch('api-exemplo.yaml')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Arquivo api-exemplo.yaml encontrado!');
+                    } else {
+                        console.warn('Arquivo api-exemplo.yaml não encontrado');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao verificar arquivo YAML:', error);
+                });
         });
     </script>
 </body>
