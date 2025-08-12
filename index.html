@@ -136,7 +136,7 @@
                         return response.text();
                     })
                     .then(() => {
-                        // Carregar Swagger UI
+                        // Carregar Swagger UI SEM layout específico
                         ui = SwaggerUIBundle({
                             url: url,
                             dom_id: '#swagger-ui',
@@ -145,21 +145,10 @@
                                 SwaggerUIBundle.presets.apis,
                                 SwaggerUIBundle.presets.standalone
                             ],
-                            plugins: [
-                                SwaggerUIBundle.plugins.DownloadUrl
-                            ],
-                            layout: "StandaloneLayout",
+                            // REMOVIDO: layout: "StandaloneLayout",
                             docExpansion: "list",
                             filter: true,
-                            tryItOutEnabled: true,
-                            requestInterceptor: (request) => {
-                                console.log('Request:', request);
-                                return request;
-                            },
-                            responseInterceptor: (response) => {
-                                console.log('Response:', response);
-                                return response;
-                            }
+                            tryItOutEnabled: true
                         });
                     })
                     .catch(error => {
@@ -185,7 +174,6 @@
                             url: "api-exemplo.yaml",
                             name: "API Exemplo"
                         }
-                        // Adicione mais APIs aqui conforme necessário
                     ],
                     "urls.primaryName": "API Exemplo",
                     dom_id: '#swagger-ui',
@@ -194,10 +182,7 @@
                         SwaggerUIBundle.presets.apis,
                         SwaggerUIBundle.presets.standalone
                     ],
-                    plugins: [
-                        SwaggerUIBundle.plugins.DownloadUrl
-                    ],
-                    layout: "StandaloneLayout",
+                    // REMOVIDO: layout: "StandaloneLayout",
                     docExpansion: "list",
                     filter: true,
                     tryItOutEnabled: true
