@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @SpringBootApplication
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class App {
     
     private List<Usuario> usuarios = new ArrayList<>();
@@ -26,6 +27,7 @@ public class App {
         Map<String, String> status = new HashMap<>();
         status.put("status", "UP");
         status.put("timestamp", LocalDateTime.now().toString());
+        status.put("message", "API Empresas funcionando!");
         return status;
     }
     
