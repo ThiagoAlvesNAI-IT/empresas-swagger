@@ -11,14 +11,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.52.5/swagger-ui-bundle.js"></script>
     <script>
     const ui = SwaggerUIBundle({
-    	  url: 'https://raw.githubusercontent.com/your-username/your-repository-name/main/swagger.json',
-    	  dom_id: '#swagger-ui',
-    	  deepLinking: true,
-    	  presets: [
-    	    SwaggerUIBundle.presets.apis,
-    	    SwaggerUIBundle.plugins.DownloadUrl
-    	  ]
-    	});
+  url: 'https://raw.githubusercontent.com/ThiagoAlvesNAI-IT/testeSwagger/main/swagger.yaml', // URL do seu swagger.yaml no GitHub
+  dom_id: '#swagger-ui',
+  deepLinking: true,
+  presets: [
+    SwaggerUIBundle.presets.apis,
+    SwaggerUIBundle.plugins.DownloadUrl
+  ]
+});
+
 
     </script>
   </body>
